@@ -1,62 +1,59 @@
-import pandas as pd
+import csv
 
 
-def group_by_meeting_options(filename, output_filename):
+def read_meeting_options_csv(filename):
     """
-    Groups the names of people under each of the meeting options from a CSV file and writes the results to a text file.
+    Reads data from a CSV file containing meeting options and associated names.
 
     Args:
-      filename: The name of the CSV file.
-      output_filename: The name of the text file to write the results to.
+        filename: The path to the CSV file.
+
+    Returns:
+        A dictionary where keys are meeting options (strings) and values are lists of unique names (strings) associated with that option.
     """
+    meeting_options = {}
+    with open(filename, "r") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            name = row["Name"]
+            raw_options = (
+                row["Chosen Meeting Options"].lstrip("[").rstrip("]").split(", ")
+            )
+            options = []
+            for option in raw_options:
+                option = option.strip().strip("'").strip()
+                if " " in option:
+                    options.append(option)
+                    meeting_options.setdefault(
+                        option, set()
+                    )  # Initialize set for unique names per option
+            for option in options:
+                if name not in meeting_options[option]:
+                    meeting_options[option].add(name)  # Add unique names to the set
+    return meeting_options
 
-    # Read the CSV file
-    df = pd.read_csv(filename)
 
-    # Create a dictionary to store the grouped data
-    meeting_options_to_names = {}
+def write_grouped_data_to_text(data, filename):
+    """
+    Writes grouped meeting options and associated names to a text file.
 
-    # Iterate over each row in the DataFrame
-    for index, row in df.iterrows():
-        # Get the meeting options
-        meeting_options = row["Meeting Days"].split(", ")
-
-        # Extract the day and presence from each option
-        for option in meeting_options:
-            try:
-                day, presence = option.split(" (")
-                presence = presence.strip(")")
-            except ValueError:
-                # Option doesn't have presence information
-                day = option
-                presence = "None"
-
-            # Get the full meeting option
-            meeting_option = f"{day} ({presence})"
-
-            # Check if the meeting option exists in the dictionary
-            if meeting_option not in meeting_options_to_names:
-                meeting_options_to_names[meeting_option] = []
-
-            # Add the name to the list for the corresponding meeting option
-            meeting_options_to_names[meeting_option].append(row["Name"])
-
-    # Open the text file for writing
-    with open(output_filename, "w") as f:
-        # Write the header line
-        f.write("Meeting Option\tNames\n")
-
-        # Write the grouped data to the file
-        for meeting_option, names in meeting_options_to_names.items():
-            f.write(f"{meeting_option}\t")
+    Args:
+        data: A dictionary where keys are meeting options and values are sets of unique names.
+        filename: The path to the text file.
+    """
+    with open(filename, "w") as textfile:
+        for option, names in data.items():
+            textfile.write(f"**Meeting Option:** {option}\n")
             for name in names:
-                f.write(f"{name}, ")
-            f.write("\n")
+                textfile.write(f"- {name}\n")
 
 
-# Example usage
-filename = "responses.csv"
-output_filename = "grouped_meeting_options.txt"
-group_by_meeting_options(filename, output_filename)
+# Read data from the CSV file
+grouped_meeting_options = read_meeting_options_csv("meeting_options.csv")
 
-print(f"Grouped meeting options data written to '{output_filename}'.")
+# Write grouped data to a text file
+write_grouped_data_to_text(grouped_meeting_options, "grouped_meeting_options.txt")
+
+print(
+    "Grouped meeting options and completely unique names have been written to 'grouped_meeting_options.txt'."
+)
