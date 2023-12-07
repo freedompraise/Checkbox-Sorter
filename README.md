@@ -31,7 +31,7 @@ The following Python scripts are used in this case study:
 
 ### Example Outputs
 
-**grouped_meeting_options.txt:**
+`grouped_meeting_options.txt:`
 
 **Meeting Option:** Monday, 11th (online)
 
@@ -70,7 +70,7 @@ The following Python scripts are used in this case study:
 
 This code can be adapted to accommodate different requirements:
 
-- **Different meeting option format:** If your meeting options are formatted differently, you can modify the `read_meeting_options_csv.py` script to handle the specific format.
+- **Different meeting option format:** If your meeting options are formatted differently, you can modify the `groups.py` script to handle the specific format.
 - **Multiple selection types:** If your Google Form allows multiple selection types, you can modify the code to handle various data formats accordingly.
 - **Different output format:** You can modify the `script.py` script to output the data in a different format, such as a JSON file or a spreadsheet.
 
