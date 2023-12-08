@@ -1,14 +1,18 @@
+"""
+This script sorts and groups names based on chosen meeting options from a CSV file.
+"""
+
 import csv
 
 # Define the filename
-filename = "responses.csv"
+FILENAME = "responses.csv"
 
 # Create empty lists for names and chosen meeting options
 names = []
 chosen_meeting_options = []
 
-# Open the CSV file
-with open(filename, "r") as csvfile:
+# Open the CSV file with explicit encoding
+with open(FILENAME, "r", encoding="utf-8") as csvfile:
     # Create a CSV reader object
     reader = csv.DictReader(csvfile)
 
@@ -19,15 +23,13 @@ with open(filename, "r") as csvfile:
 
 # Create a list of dictionaries with names and chosen meeting options
 combined_data = []
-for i in range(len(names)):
+for index, name in enumerate(names):
     combined_data.append(
-        {"Name": names[i], "Chosen Meeting Options": chosen_meeting_options[i]}
+        {"Name": name, "Chosen Meeting Options": chosen_meeting_options[index]}
     )
 
 # Print the results
-print("Names and chosen meeting options:")
-for item in combined_data:
-    print(f"Meeting Options: {item['Chosen Meeting Options']}")
+print("Meeting Options:")
 
 # Save the results to a new CSV file named "meeting_options.csv"
 with open("meeting_options.csv", "w", newline="") as csvfile:
