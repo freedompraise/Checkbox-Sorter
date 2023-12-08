@@ -32,7 +32,7 @@ for index, name in enumerate(names):
 print("Meeting Options:")
 
 # Save the results to a new CSV file named "meeting_options.csv"
-with open("meeting_options.csv", "w", newline="") as csvfile:
+with open("meeting_options.csv", "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=["Name", "Chosen Meeting Options"])
     writer.writeheader()
     writer.writerows(combined_data)
